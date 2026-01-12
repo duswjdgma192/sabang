@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunch Menu Roulette</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Lunch Roulette</h1>
+            <p>오늘 점심 뭐 먹지?</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <label for="menuInput">메뉴 입력 (쉼표로 구분)</label>
+                <textarea id="menuInput" placeholder="예: 피자, 햄버거, 피자, 초밥..."></textarea>
+                <div class="helper-text">※ 중복 입력 시 당첨 확률이 올라갑니다!</div>
+                <button id="updateBtn">룰렛 만들기</button>
+            </div>
+
+            <div class="roulette-section">
+                <div class="canvas-container">
+                    <canvas id="rouletteCanvas" width="500" height="500"></canvas>
+                    <div class="pointer"></div>
+                </div>
+                <button id="startBtn" disabled>START</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>오늘의 메뉴는!</h2>
+            <div id="resultText"></div>
+            <button id="closeModalBtn">좋아요!</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
