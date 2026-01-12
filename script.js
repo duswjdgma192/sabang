@@ -1,19 +1,61 @@
-const canvas = document.getElementById('rouletteCanvas');
-const ctx = canvas.getContext('2d');
+// --- Firebase Configuration ---
+const firebaseConfig = {
+    apiKey: 'AIzaSyAYbxVQM6yKtSVaoQToiGcQIDe7X1BJDfo',
+    authDomain: 'sabang-6519f.firebaseapp.com',
+    databaseURL: 'https://sabang-6519f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    projectId: 'sabang-6519f',
+    storageBucket: 'sabang-6519f.firebasestorage.app',
+    messagingSenderId: '760848505752',
+    appId: '1:760848505752:web:fda74fa2b3d0fce458a9ed',
+    measurementId: 'G-CYRX1TKBTF',
+};
+
+// Initialize Firebase (Compat)
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const COLLECTION_NAME = 'lunch_history';
+
 const menuInput = document.getElementById('menuInput');
 const updateBtn = document.getElementById('updateBtn');
 const startBtn = document.getElementById('startBtn');
 const resultModal = document.getElementById('resultModal');
 const resultText = document.getElementById('resultText');
 const closeModalBtn = document.getElementById('closeModalBtn');
+const likeBtn = document.getElementById('likeBtn');
+const likePopup = document.getElementById('likePopup');
+
+// Slot Elements
+const slotReel = document.getElementById('slotReel');
+
+// Stats Elements
+const statsBtn = document.getElementById('statsBtn');
+const backBtn = document.getElementById('backBtn');
+const mainContent = document.querySelector('.main-content');
+const statsSection = document.getElementById('statsSection');
+const statsList = document.getElementById('statsList');
+const dateFrom = document.getElementById('dateFrom');
+const dateTo = document.getElementById('dateTo');
+const searchStatsBtn = document.getElementById('searchStatsBtn');
 
 let menus = [];
-let totalCount = 0;
-let currentRotation = 0;
 let isSpinning = false;
+let currentWinner = null;
+let currentDocId = null;
 
-// Color palette
-const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#F1948A', '#82E0AA', '#85C1E9'];
+// --- Helper Functions ---
+
+function generateDocId() {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    return `${yyyy}${mm}${dd}${hh}${min}${ss}`;
+}
+
+// --- Slot Machine Logic ---
 
 function parseInput() {
     const rawText = menuInput.value;
@@ -21,65 +63,34 @@ function parseInput() {
         .split(',')
         .map((item) => item.trim())
         .filter((item) => item !== '');
-
-    const counts = {};
-    items.forEach((item) => {
-        counts[item] = (counts[item] || 0) + 1;
-    });
-
-    menus = Object.keys(counts).map((key) => ({
-        name: key,
-        count: counts[key],
-    }));
-
-    totalCount = items.length;
+    menus = items;
 }
 
-function drawRoulette() {
+function createReelStrip() {
+    slotReel.innerHTML = '';
     if (menus.length === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        slotReel.innerHTML = '<div class="slot-item">EMPTY</div>';
         return;
     }
 
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = canvas.width / 2 - 10;
+    const uniqueMenus = [...new Set(menus)];
+    const displayList = [];
+    for (let i = 0; i < 50; i++) {
+        displayList.push(...uniqueMenus);
+    }
 
-    let startAngle = currentRotation;
-
-    menus.forEach((menu, index) => {
-        const sliceAngle = (menu.count / totalCount) * 2 * Math.PI;
-        const endAngle = startAngle + sliceAngle;
-
-        // Draw Slice
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.closePath();
-        ctx.fillStyle = colors[index % colors.length];
-        ctx.fill();
-        ctx.stroke();
-
-        // Draw Text
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(startAngle + sliceAngle / 2);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 20px Poppins';
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 4;
-        ctx.fillText(menu.name, radius - 20, 5);
-        ctx.restore();
-
-        startAngle = endAngle;
+    displayList.forEach((menu) => {
+        const div = document.createElement('div');
+        div.className = 'slot-item';
+        div.textContent = menu;
+        slotReel.appendChild(div);
     });
 }
 
 function spin() {
     if (isSpinning) return;
     if (menus.length === 0) {
-        alert('메뉴를 먼저 입력해주세요!');
+        alert('Please enter menus first!');
         return;
     }
 
@@ -87,88 +98,275 @@ function spin() {
     startBtn.disabled = true;
     updateBtn.disabled = true;
 
-    // Random spin duration and speed
-    const spinDuration = 3000 + Math.random() * 2000; // 3-5 seconds
-    const spinAngle = (10 + Math.random() * 10) * 2 * Math.PI; // At least 10 full rotations
+    const randomIndex = Math.floor(Math.random() * menus.length);
+    currentWinner = menus[randomIndex];
 
-    const start = performance.now();
-    const startRotation = currentRotation;
+    slotReel.style.transition = 'none';
+    slotReel.style.transform = 'translateY(0)';
 
-    function animate(time) {
-        const elapsed = time - start;
-        const progress = Math.min(elapsed / spinDuration, 1);
+    slotReel.innerHTML = '';
+    const uniqueMenus = [...new Set(menus)];
+    const fragment = document.createDocumentFragment();
 
-        // Ease out cubic
-        const ease = 1 - Math.pow(1 - progress, 3);
+    const ITEM_HEIGHT = 200;
+    const SPIN_CYCLES = 30;
 
-        currentRotation = startRotation + spinAngle * ease;
-        drawRoulette();
-
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        } else {
-            isSpinning = false;
-            startBtn.disabled = false;
-            updateBtn.disabled = false;
-            showResult();
-        }
+    for (let i = 0; i < SPIN_CYCLES; i++) {
+        const menu = uniqueMenus[Math.floor(Math.random() * uniqueMenus.length)];
+        const div = document.createElement('div');
+        div.className = 'slot-item';
+        div.textContent = menu;
+        fragment.appendChild(div);
     }
 
-    requestAnimationFrame(animate);
+    const winnerDiv = document.createElement('div');
+    winnerDiv.className = 'slot-item';
+    winnerDiv.textContent = currentWinner;
+    fragment.appendChild(winnerDiv);
+
+    slotReel.appendChild(fragment);
+    slotReel.offsetHeight;
+
+    const totalHeight = SPIN_CYCLES * ITEM_HEIGHT;
+
+    slotReel.style.transition = 'transform 3s cubic-bezier(0.1, 0.9, 0.2, 1)';
+    slotReel.style.transform = `translateY(-${totalHeight}px)`;
+
+    setTimeout(async () => {
+        isSpinning = false;
+        startBtn.disabled = false;
+        updateBtn.disabled = false;
+        await showResult();
+    }, 3000);
 }
 
-function showResult() {
-    // Normalize rotation to 0-2PI
-    const normalizedRotation = currentRotation % (2 * Math.PI);
-
-    // The pointer is at the top (3/2 PI or -PI/2).
-    // We need to find which slice is at that position.
-    // Since we draw clockwise from currentRotation, the slice at the top is determined by:
-    // (startAngle + sliceAngle) > target > startAngle
-    // But everything is rotated by currentRotation.
-
-    // Let's think in reverse. If we rotate the wheel by R, the pointer (at -PI/2)
-    // corresponds to an angle of (-PI/2 - R) on the unrotated wheel.
-
-    let pointerAngle = (1.5 * Math.PI - normalizedRotation) % (2 * Math.PI);
-    if (pointerAngle < 0) pointerAngle += 2 * Math.PI;
-
-    let currentAngle = 0;
-    let winner = null;
-
-    for (const menu of menus) {
-        const sliceAngle = (menu.count / totalCount) * 2 * Math.PI;
-        if (pointerAngle >= currentAngle && pointerAngle < currentAngle + sliceAngle) {
-            winner = menu.name;
-            break;
-        }
-        currentAngle += sliceAngle;
-    }
-
-    if (winner) {
-        resultText.textContent = winner;
+async function showResult() {
+    if (currentWinner) {
+        currentDocId = await saveHistory(currentWinner);
+        resultText.textContent = currentWinner;
         resultModal.classList.remove('hidden');
-        // Simple confetti or celebration effect could go here
     }
 }
+
+// --- Firebase Logic (Compat) ---
+
+async function saveHistory(menuName) {
+    const docId = generateDocId();
+    try {
+        await db.collection(COLLECTION_NAME).doc(docId).set({
+            menu: menuName,
+            date: new Date().toISOString(),
+            liked: false,
+        });
+        console.log('Document written with ID: ', docId);
+        return docId;
+    } catch (e) {
+        console.error('Error adding document: ', e);
+        alert('Error saving result to database. Check console.');
+        return null;
+    }
+}
+
+async function likeCurrentWinner() {
+    if (!currentDocId) {
+        alert('No record found to like.');
+        return;
+    }
+
+    try {
+        await db.collection(COLLECTION_NAME).doc(currentDocId).update({
+            liked: true,
+        });
+
+        // Visual Effects
+        triggerFireworks();
+        showLikePopup();
+
+        likeBtn.disabled = true;
+
+        // Auto close after 1 second
+        setTimeout(() => {
+            resultModal.classList.add('hidden');
+            likePopup.classList.remove('show');
+            likeBtn.disabled = false;
+        }, 1000);
+    } catch (e) {
+        console.error('Error updating document: ', e);
+        alert('Error updating like.');
+    }
+}
+
+function triggerFireworks() {
+    const duration = 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+        confetti({
+            particleCount: 7,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            zIndex: 9999, // Ensure it's above everything
+        });
+        confetti({
+            particleCount: 7,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            zIndex: 9999, // Ensure it's above everything
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    })();
+}
+
+function showLikePopup() {
+    likePopup.classList.add('show');
+}
+
+async function renderStats() {
+    statsList.innerHTML = '<li style="text-align:center; color:#fff;">Loading data...</li>';
+
+    try {
+        const querySnapshot = await db.collection(COLLECTION_NAME).orderBy('date', 'desc').get();
+
+        const history = [];
+        querySnapshot.forEach((doc) => {
+            history.push(doc.data());
+        });
+
+        const fromVal = dateFrom.value;
+        const toVal = dateTo.value;
+
+        let fromDate = null;
+        let toDate = null;
+
+        if (fromVal) {
+            fromDate = new Date(fromVal);
+            fromDate.setHours(0, 0, 0, 0);
+        }
+        if (toVal) {
+            toDate = new Date(toVal);
+            toDate.setHours(23, 59, 59, 999);
+        }
+
+        const filteredHistory = history.filter((entry) => {
+            const entryDate = new Date(entry.date);
+
+            if (fromDate && entryDate < fromDate) return false;
+            if (toDate && entryDate > toDate) return false;
+
+            return true;
+        });
+
+        const statsMap = {};
+        filteredHistory.forEach((entry) => {
+            if (!statsMap[entry.menu]) {
+                statsMap[entry.menu] = { wins: 0, likes: 0 };
+            }
+            statsMap[entry.menu].wins += 1;
+            // Check for 'liked' or 'linked' (typo handling)
+            if (entry.liked || entry.linked) {
+                statsMap[entry.menu].likes += 1;
+            }
+        });
+
+        const sortedMenus = Object.keys(statsMap).sort((a, b) => {
+            if (statsMap[b].wins !== statsMap[a].wins) {
+                return statsMap[b].wins - statsMap[a].wins;
+            }
+            return statsMap[b].likes - statsMap[a].likes;
+        });
+
+        statsList.innerHTML = '';
+        if (sortedMenus.length === 0) {
+            statsList.innerHTML = '<li style="text-align:center; color:#fff;">No records found for this period.</li>';
+            return;
+        }
+
+        sortedMenus.forEach((menu, index) => {
+            const data = statsMap[menu];
+            const li = document.createElement('li');
+            li.className = 'stat-item';
+
+            let rankEmoji = '🔹';
+            if (index === 0) rankEmoji = '🥇';
+            if (index === 1) rankEmoji = '🥈';
+            if (index === 2) rankEmoji = '🥉';
+
+            li.innerHTML = `
+                <span class="stat-rank">${rankEmoji}</span>
+                <span class="stat-name">${menu}</span>
+                <div class="stat-info">
+                    <span class="stat-badge wins">🏆 ${data.wins}</span>
+                    <span class="stat-badge likes">❤️ ${data.likes}</span>
+                </div>
+            `;
+            statsList.appendChild(li);
+        });
+    } catch (e) {
+        console.error('Error fetching documents: ', e);
+        statsList.innerHTML = '<li style="text-align:center; color:red;">Error loading data. Check console.</li>';
+    }
+}
+
+// --- Event Listeners ---
 
 updateBtn.addEventListener('click', () => {
     parseInput();
     if (menus.length > 0) {
         startBtn.disabled = false;
-        drawRoulette();
+        createReelStrip();
     } else {
         startBtn.disabled = true;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        slotReel.innerHTML = '<div class="slot-item">READY</div>';
     }
 });
 
 startBtn.addEventListener('click', spin);
 
+likeBtn.addEventListener('click', likeCurrentWinner);
+
 closeModalBtn.addEventListener('click', () => {
     resultModal.classList.add('hidden');
+    likeBtn.disabled = false; // Reset for next time
 });
 
-// Initial draw if there's default text (optional)
-// parseInput();
-// drawRoulette();
+// const dateFilter = document.getElementById('dateFilter'); // Removed
+
+// ... (rest of the code)
+
+statsBtn.addEventListener('click', () => {
+    // Default to "Today" if no dates selected
+    if (!dateFrom.value && !dateTo.value) {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+        dateFrom.value = todayStr;
+        dateTo.value = todayStr;
+    }
+    renderStats();
+    mainContent.classList.add('hidden');
+    statsSection.classList.remove('hidden');
+});
+
+backBtn.addEventListener('click', () => {
+    statsSection.classList.add('hidden');
+    mainContent.classList.remove('hidden');
+});
+
+searchStatsBtn.addEventListener('click', renderStats);
+
+// Make date inputs open picker on click
+dateFrom.addEventListener('click', function () {
+    this.showPicker();
+});
+dateTo.addEventListener('click', function () {
+    this.showPicker();
+});
+
+slotReel.innerHTML = '<div class="slot-item">READY</div>';
