@@ -4,46 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunch Menu Roulette</title>
+    <title>Lunch Menu Slot Machine</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
+    <div class="casino-container">
         <header>
-            <h1>Lunch Roulette</h1>
-            <p>오늘 점심 뭐 먹지?</p>
+            <h1>🎰 LUNCH JACKPOT 🎰</h1>
+            <p>TODAY'S SPECIAL</p>
         </header>
 
         <div class="main-content">
             <div class="input-section">
-                <label for="menuInput">메뉴 입력 (쉼표로 구분)</label>
-                <textarea id="menuInput" placeholder="예: 피자, 햄버거, 피자, 초밥..."></textarea>
-                <div class="helper-text">※ 중복 입력 시 당첨 확률이 올라갑니다!</div>
-                <button id="updateBtn">룰렛 만들기</button>
+                <div class="header-buttons">
+                    <label for="menuInput">MENU LIST</label>
+                    <button id="statsBtn" class="small-btn">📊 HISTORY</button>
+                </div>
+                <textarea id="menuInput" placeholder="Enter menus (e.g., Pizza, Burger, Sushi...)"></textarea>
+                <div class="helper-text">Duplicate entries increase winning chance!</div>
+                <button id="updateBtn">LOAD MACHINE</button>
             </div>
 
-            <div class="roulette-section">
-                <div class="canvas-container">
-                    <canvas id="rouletteCanvas" width="500" height="500"></canvas>
-                    <div class="pointer"></div>
+            <div class="slot-machine-section">
+                <div class="slot-machine-frame">
+                    <div class="slot-window">
+                        <div class="slot-reel" id="slotReel">
+                            <div class="slot-item">LUNCH</div>
+                            <div class="slot-item">TIME</div>
+                            <div class="slot-item">READY?</div>
+                        </div>
+                        <div class="slot-overlay"></div>
+                        <div class="win-line"></div>
+                    </div>
+                    <div class="slot-controls">
+                        <button id="startBtn" disabled>SPIN!</button>
+                    </div>
                 </div>
-                <button id="startBtn" disabled>START</button>
+            </div>
+        </div>
+
+        <div id="statsSection" class="stats-section hidden">
+            <div class="stats-header">
+                <h2>📜 HISTORY LOG</h2>
+                <div class="stats-controls">
+                    <div class="date-range-inputs">
+                        <input type="date" id="dateFrom" class="date-input">
+                        <span class="date-separator">~</span>
+                        <input type="date" id="dateTo" class="date-input">
+                        <button id="searchStatsBtn" class="small-btn">🔍</button>
+                    </div>
+                    <button id="backBtn" class="small-btn">🔙 BACK</button>
+                </div>
+            </div>
+            <div class="stats-content">
+                <ul id="statsList">
+                    <!-- Stats items will be injected here -->
+                </ul>
             </div>
         </div>
     </div>
 
     <div id="resultModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>오늘의 메뉴는!</h2>
+        <div class="modal-content casino-modal">
+            <h2>🎉 JACKPOT! 🎉</h2>
             <div id="resultText"></div>
-            <button id="closeModalBtn">좋아요!</button>
+            <div class="modal-buttons">
+                <button id="likeBtn">❤️ LIKE IT!</button>
+                <button id="closeModalBtn">CLOSE</button>
+            </div>
         </div>
     </div>
 
+    <!-- Like Popup Image -->
+    <div id="likePopup" class="like-popup hidden">
+        ❤️
+    </div>
+
+    <!-- Firebase Compat SDK (for running locally without server) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
 
