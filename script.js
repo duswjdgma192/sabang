@@ -69,7 +69,7 @@ function parseInput() {
 function createReelStrip() {
     slotReel.innerHTML = '';
     if (menus.length === 0) {
-        slotReel.innerHTML = '<div class="slot-item">EMPTY</div>';
+        slotReel.innerHTML = '<div class="slot-item">EMPTY 🍽️</div>';
         return;
     }
 
@@ -90,7 +90,7 @@ function createReelStrip() {
 function spin() {
     if (isSpinning) return;
     if (menus.length === 0) {
-        alert('Please enter menus first!');
+        alert('Please add some delicious menu items first! 🍽️');
         return;
     }
 
@@ -227,7 +227,7 @@ function showLikePopup() {
 }
 
 async function renderStats() {
-    statsList.innerHTML = '<li style="text-align:center; color:#fff;">Loading data...</li>';
+    statsList.innerHTML = '<li style="text-align:center; color:var(--text-color);">Loading delicious history... 🍔</li>';
 
     try {
         const querySnapshot = await db.collection(COLLECTION_NAME).orderBy('date', 'desc').get();
@@ -282,7 +282,7 @@ async function renderStats() {
 
         statsList.innerHTML = '';
         if (sortedMenus.length === 0) {
-            statsList.innerHTML = '<li style="text-align:center; color:#fff;">No records found for this period.</li>';
+            statsList.innerHTML = '<li style="text-align:center; color:var(--text-color);">No yummy records found for this period. 😢</li>';
             return;
         }
 
@@ -321,7 +321,7 @@ updateBtn.addEventListener('click', () => {
         createReelStrip();
     } else {
         startBtn.disabled = true;
-        slotReel.innerHTML = '<div class="slot-item">READY</div>';
+        slotReel.innerHTML = '<div class="slot-item">HUNGRY?</div>';
     }
 });
 
@@ -369,4 +369,4 @@ dateTo.addEventListener('click', function () {
     this.showPicker();
 });
 
-slotReel.innerHTML = '<div class="slot-item">READY</div>';
+slotReel.innerHTML = '<div class="slot-item">HUNGRY?</div>';
