@@ -4,46 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunch Menu Slot Machine</title>
+    <title>Lunch Menu Picker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Poppins:wght@400;600;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="casino-container">
+    <div class="food-container">
         <header>
-            <h1>🎰 LUNCH JACKPOT 🎰</h1>
-            <p>TODAY'S SPECIAL</p>
+            <h1>🍱 TODAY'S LUNCH 🍱</h1>
+            <p>WHAT SHOULD WE EAT?</p>
         </header>
 
         <div class="main-content">
             <div class="input-section">
                 <div class="header-buttons">
-                    <label for="menuInput">MENU LIST</label>
-                    <button id="statsBtn" class="small-btn">📊 HISTORY</button>
+                    <label for="menuInput">MENU LIST 📝</label>
+                    <button id="statsBtn" class="small-btn">📊 MENU LOG</button>
                 </div>
-                <textarea id="menuInput" placeholder="Enter menus (e.g., Pizza, Burger, Sushi...)"></textarea>
-                <div class="helper-text">Duplicate entries increase winning chance!</div>
-                <button id="updateBtn">LOAD MACHINE</button>
+                <textarea id="menuInput" placeholder="Enter menus (Pizza 🍕, Burger 🍔, Sushi 🍣...)"></textarea>
+                <div class="helper-text">Add more favorites to increase their chance! 😋</div>
+                <button id="updateBtn">PREPARE MENU</button>
             </div>
 
             <div class="slot-machine-section">
                 <div class="slot-machine-frame">
                     <div class="slot-window">
                         <div class="slot-reel" id="slotReel">
+                            <div class="slot-item">HUNGRY?</div>
                             <div class="slot-item">LUNCH</div>
-                            <div class="slot-item">TIME</div>
-                            <div class="slot-item">READY?</div>
+                            <div class="slot-item">TIME!</div>
                         </div>
                         <div class="slot-overlay"></div>
-                        <div class="win-line"></div>
+                        <div class="selection-highlight"></div>
                     </div>
                     <div class="slot-controls">
-                        <button id="startBtn" disabled>SPIN!</button>
+                        <button id="startBtn" disabled>PICK MENU! 🍴</button>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
 
         <div id="statsSection" class="stats-section hidden">
             <div class="stats-header">
-                <h2>📜 HISTORY LOG</h2>
+                <h2>📜 MENU HISTORY</h2>
                 <div class="stats-controls">
                     <div class="date-range-inputs">
                         <input type="date" id="dateFrom" class="date-input">
@@ -71,11 +71,11 @@
     </div>
 
     <div id="resultModal" class="modal hidden">
-        <div class="modal-content casino-modal">
-            <h2>🎉 JACKPOT! 🎉</h2>
+        <div class="modal-content food-modal">
+            <h2>✨ Congratulations! ✨</h2>
             <div id="resultText"></div>
             <div class="modal-buttons">
-                <button id="likeBtn">❤️ LIKE IT!</button>
+                <button id="likeBtn">❤️ YUMMY!</button>
                 <button id="closeModalBtn">CLOSE</button>
             </div>
         </div>
@@ -83,7 +83,7 @@
 
     <!-- Like Popup Image -->
     <div id="likePopup" class="like-popup hidden">
-        ❤️
+        😋
     </div>
 
     <!-- Firebase Compat SDK (for running locally without server) -->
