@@ -1,11 +1,12 @@
 :root {
-    --primary-color: #ffd700; /* Gold */
-    --secondary-color: #ff003c; /* Neon Red */
-    --bg-color: #1a0b2e; /* Dark Purple/Black */
-    --panel-color: #2b1d42;
-    --text-color: #ffffff;
+    --primary-color: #ff9f1c; /* Warm Orange */
+    --secondary-color: #ff6b6b; /* Soft Red */
+    --accent-color: #2ec4b6; /* Fresh Teal */
+    --bg-color: #fff9f0; /* Creamy White */
+    --panel-color: #ffffff;
+    --text-color: #2d3436;
     --font-main: 'Poppins', sans-serif;
-    --font-display: 'Orbitron', sans-serif;
+    --font-display: 'Fredoka', sans-serif;
 }
 
 * {
@@ -16,7 +17,10 @@
 
 body {
     font-family: var(--font-main);
-    background: radial-gradient(circle at center, #2b1d42 0%, #0f0518 100%);
+    background-color: var(--bg-color);
+    background-image: radial-gradient(#ffd700 1px, transparent 1px), radial-gradient(#ffd700 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
     color: var(--text-color);
     min-height: 100vh;
     display: flex;
@@ -25,14 +29,14 @@ body {
     overflow-x: hidden;
 }
 
-.casino-container {
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid var(--primary-color);
-    border-radius: 20px;
-    padding: 2rem;
+.food-container {
+    background: var(--panel-color);
+    border: 4px solid var(--primary-color);
+    border-radius: 30px;
+    padding: 2.5rem;
     width: 90%;
     max-width: 1000px;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,21 +46,22 @@ body {
 
 header {
     text-align: center;
-    text-shadow: 0 0 10px var(--secondary-color);
 }
 
 header h1 {
     font-family: var(--font-display);
-    font-size: 3rem;
-    color: var(--primary-color);
+    font-size: 3.5rem;
+    color: var(--secondary-color);
     margin-bottom: 0.5rem;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0px #ffe66d;
 }
 
 header p {
-    color: var(--secondary-color);
+    color: var(--accent-color);
     font-weight: 700;
-    letter-spacing: 5px;
+    letter-spacing: 2px;
+    font-size: 1.2rem;
 }
 
 .main-content {
@@ -89,57 +94,63 @@ header p {
 .small-btn {
     padding: 0.5rem 1rem;
     font-family: var(--font-display);
-    font-size: 0.8rem;
-    background: transparent;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--text-color);
+    border: 2px solid var(--text-color);
+    border-radius: 15px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    font-weight: 600;
 }
 
 .small-btn:hover {
-    background: var(--primary-color);
-    color: #000;
-    box-shadow: 0 0 15px var(--primary-color);
+    background: var(--text-color);
+    color: #fff;
+    transform: translateY(-2px);
 }
 
 label {
     font-family: var(--font-display);
-    color: var(--primary-color);
-    font-size: 1.2rem;
+    color: var(--text-color);
+    font-size: 1.4rem;
+    font-weight: 600;
 }
 
 textarea {
     width: 100%;
     height: 150px;
-    padding: 1rem;
-    border-radius: 10px;
-    border: 2px solid #444;
-    background: #111;
-    color: var(--primary-color);
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 3px solid #eee;
+    background: #fafafa;
+    color: var(--text-color);
     font-family: var(--font-main);
     font-size: 1.2rem;
     resize: vertical;
+    transition: all 0.3s;
 }
 
 textarea:focus {
     outline: none;
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 10px var(--secondary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.2);
+    background: #fff;
 }
 
 .helper-text {
     font-size: 0.9rem;
     color: #888;
+    font-style: italic;
 }
 
 button {
     padding: 1rem 2rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 900;
+    font-size: 1.3rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     text-transform: uppercase;
@@ -147,14 +158,19 @@ button {
 }
 
 #updateBtn {
-    background: #333;
+    background: var(--accent-color);
     color: #fff;
-    border: 1px solid #555;
+    box-shadow: 0 4px 0 #249d92;
 }
 
 #updateBtn:hover {
-    background: #444;
-    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #249d92;
+}
+
+#updateBtn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #249d92;
 }
 
 /* Slot Machine Styles */
@@ -166,43 +182,41 @@ button {
 }
 
 .slot-machine-frame {
-    background: #222;
+    background: #fff;
     padding: 20px;
-    border-radius: 20px;
-    border: 4px solid var(--primary-color);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.8);
+    border-radius: 40px;
+    border: 8px solid var(--secondary-color);
+    box-shadow: 0 10px 0 rgba(0, 0, 0, 0.1);
     width: 350px;
     text-align: center;
+    position: relative;
 }
 
 .slot-window {
     height: 200px;
     background: #fff;
-    border: 4px solid #000;
-    border-radius: 10px;
+    border: 3px solid #eee;
+    border-radius: 20px;
     overflow: hidden;
     position: relative;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
 .slot-reel {
     display: flex;
     flex-direction: column;
-    transition: transform 0.1s linear; /* JS handles the animation loop */
+    transition: transform 0.1s linear;
 }
 
 .slot-item {
-    height: 200px; /* Same as window height */
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: var(--font-display);
     font-size: 2.5rem;
-    font-weight: 900;
-    color: #333;
-    text-shadow: 1px 1px 0 #ddd;
-    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    color: var(--text-color);
     box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
@@ -215,44 +229,48 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.6) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, 0.9) 100%);
     pointer-events: none;
     z-index: 5;
 }
 
-.win-line {
+.selection-highlight {
     position: absolute;
     top: 50%;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 0, 60, 0.5);
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 60px;
+    border: 4px solid var(--primary-color);
+    border-radius: 15px;
     z-index: 4;
-    box-shadow: 0 0 10px var(--secondary-color);
+    pointer-events: none;
+    box-shadow: 0 0 15px rgba(255, 159, 28, 0.3);
 }
 
 #startBtn {
-    background: linear-gradient(to bottom, #ff003c, #cc0030);
+    background: var(--secondary-color);
     color: white;
     width: 100%;
-    font-size: 2rem;
-    text-shadow: 0 2px 0 #990024;
-    box-shadow: 0 5px 0 #990024, 0 10px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 0 #d94545;
+}
+
+#startBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #d94545;
 }
 
 #startBtn:active:not(:disabled) {
-    transform: translateY(5px);
-    box-shadow: 0 0 0 #990024, inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #d94545;
 }
 
 #startBtn:disabled {
-    background: #555;
+    background: #ddd;
     box-shadow: none;
     cursor: not-allowed;
-    color: #888;
-    text-shadow: none;
+    color: #aaa;
 }
 
 /* Modal */
@@ -262,7 +280,8 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -276,33 +295,34 @@ button {
     pointer-events: none;
 }
 
-.casino-modal {
-    background: #1a0b2e;
-    border: 2px solid var(--primary-color);
+.food-modal {
+    background: #fff;
+    border: 5px solid var(--primary-color);
     padding: 3rem;
-    border-radius: 20px;
+    border-radius: 40px;
     text-align: center;
-    color: var(--primary-color);
-    box-shadow: 0 0 50px var(--primary-color);
+    color: var(--text-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+    max-width: 90%;
 }
 
-.casino-modal h2 {
+.food-modal h2 {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--secondary-color);
 }
 
 #resultText {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 20px var(--primary-color);
+    color: var(--text-color);
+    font-family: var(--font-display);
+    margin: 1rem 0;
 }
 
 .modal-buttons {
@@ -312,12 +332,16 @@ button {
 
 #likeBtn {
     background: var(--secondary-color);
-    font-size: 1rem;
+    box-shadow: 0 4px 0 #d94545;
+    color: #fff;
+    font-size: 1.1rem;
 }
 
 #closeModalBtn {
-    background: #333;
-    font-size: 1rem;
+    background: #eee;
+    color: #555;
+    box-shadow: 0 4px 0 #ccc;
+    font-size: 1.1rem;
 }
 
 /* Stats Section */
@@ -335,12 +359,12 @@ button {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    border-bottom: 1px solid var(--primary-color);
+    border-bottom: 2px dashed #eee;
     padding-bottom: 1rem;
 }
 
 .stats-header h2 {
-    color: var(--primary-color);
+    color: var(--text-color);
     font-family: var(--font-display);
 }
 
@@ -358,43 +382,43 @@ button {
 
 .date-input {
     padding: 0.5rem;
-    background: #111;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
+    background: #fff;
+    color: var(--text-color);
+    border: 2px solid #eee;
     font-family: var(--font-main);
-    border-radius: 5px;
-    cursor: pointer; /* Make it clickable */
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .date-separator {
-    color: var(--primary-color);
+    color: var(--text-color);
     font-weight: bold;
 }
 
 #searchStatsBtn {
     padding: 0.5rem 1rem;
     font-size: 1rem;
-    color: var(--primary-color); /* Gold text */
-    border: 1px solid var(--primary-color); /* Gold border */
-    border-radius: 5px;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    background: #fff;
     transition: all 0.2s;
 }
 
 #searchStatsBtn:hover {
     background: var(--primary-color);
-    color: #000;
-    box-shadow: 0 0 15px var(--primary-color);
+    color: #fff;
 }
 
 .stats-content {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 1rem;
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem;
     max-height: 500px;
     overflow-y: auto;
+    border: 2px solid #eee;
 }
 
 #statsList {
@@ -405,21 +429,26 @@ button {
 }
 
 .stat-item {
-    background: linear-gradient(90deg, rgba(43, 29, 66, 0.8) 0%, rgba(15, 5, 24, 0.8) 100%);
-    color: #fff;
+    background: #fafafa;
+    color: var(--text-color);
     padding: 1rem;
-    border-radius: 10px;
+    border-radius: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
-    border: 1px solid #444;
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+}
+
+.stat-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .stat-rank {
     font-size: 1.5rem;
     margin-right: 1rem;
-    color: var(--primary-color);
     width: 30px;
 }
 
@@ -433,17 +462,18 @@ button {
     display: flex;
     gap: 1rem;
     font-size: 0.9rem;
-    color: #aaa;
+    color: #666;
 }
 
 .stat-badge {
-    background: #222;
+    background: #fff;
     padding: 0.3rem 0.8rem;
-    border-radius: 5px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    border: 1px solid #555;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 @keyframes popIn {
